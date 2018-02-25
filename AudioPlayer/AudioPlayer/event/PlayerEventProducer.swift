@@ -85,6 +85,9 @@ class PlayerEventProducer: NSObject, EventProducer {
         }
     }
 
+    /// Observing interval. Changes after producing events started are ignored.
+    var obervingInterval: TimeInterval = 0.05
+
     /// The listener that will be alerted a new event occured.
     weak var eventListener: EventListener?
 
@@ -136,7 +139,7 @@ class PlayerEventProducer: NSObject, EventProducer {
         }
 
         //Observing timing event
-        timeObserver = player.addPeriodicTimeObserver(forInterval: CMTimeMake(1, 2), queue: .main) { [weak self] time in
+        timeObserver = player.addPeriodicTimeObserver(forInterval: CMTimeMakeWithSeconds(obervingInterval, Int32(NSEC_PER_SEC)), queue: .main) { [weak self] time in
             if let `self` = self {
                 self.eventListener?.onEvent(PlayerEvent.progressed(time: time), generetedBy: self)
             }
